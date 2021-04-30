@@ -1,3 +1,4 @@
+from datetime import datetime
 from enum import Enum
 import iso8601
 
@@ -10,6 +11,7 @@ class GlueHomeLock:
         self._api = api
         self.lock_id = lock_id
         self._data = data
+        self.updated_at = datetime.now()
 
     @property
     def serial_number(self):
@@ -49,8 +51,12 @@ class GlueHomeLock:
     def is_battery_low(self):
         return self.battery_status < 50
 
+    def __repr__(self):
+        return f'GlueHomeLock[id={self.lock_id}, data={str(self._data)}, updated={str(self.updated_at)}]'
+
     async def refresh(self):
         self._data = await self._api._lock_data(self.lock_id)
+        self.updated_at = datetime.now()
 
     async def lock(self):
         await self._api._lock_lock(self.lock_id)
