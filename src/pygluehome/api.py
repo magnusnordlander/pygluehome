@@ -1,6 +1,9 @@
 import aiohttp
 import asyncio
 from enum import Enum
+
+from aiohttp import BasicAuth
+
 from .lock import GlueHomeLock
 
 _base_url = 'https://user-api.gluehome.com/v1'
@@ -96,7 +99,7 @@ async def issue_api_key(session, username, password):
     :type session: aiohttp.ClientSession
     """
     headers = {'User-Agent': _user_agent, 'Content-Type': 'application/json'}
-    async with session.post(f'{_base_url}/api-keys', auth=(username, password), headers=headers, json={
+    async with session.post(f'{_base_url}/api-keys', auth=BasicAuth(username, password), headers=headers, json={
         'name': 'pygluelock',
         'scopes': ['locks.write', 'locks.read', 'events.read'],
     }) as r:
